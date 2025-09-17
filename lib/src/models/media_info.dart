@@ -3,18 +3,14 @@ import 'dart:typed_data';
 
 /// Class used to return informations retrieved from an image or video.
 class MediaInfo {
-  MediaInfo({
-    this.fileName,
-    this.base64,
-    this.base64WithScheme,
-    this.data,
-  }) : assert(
-          fileName != null ||
-              base64 != null ||
-              base64WithScheme != null ||
-              data != null,
-          'At least one parameter must be not null.',
-        );
+  MediaInfo({this.fileName, this.base64, this.base64WithScheme, this.data})
+    : assert(
+        fileName != null ||
+            base64 != null ||
+            base64WithScheme != null ||
+            data != null,
+        'At least one parameter must be not null.',
+      );
 
   /// Factory constructor to generate [MediaInfo] from a [Map].
   factory MediaInfo.fromJson(Map<String, dynamic> json) {
@@ -48,10 +44,6 @@ class MediaInfo {
 
   /// Convert [MediaInfo] to JSON format
   Map<String, dynamic> toJson() {
-    return {
-      'name': fileName,
-      'data': base64,
-      'data_scheme': base64WithScheme,
-    };
+    return {'name': fileName, 'data': base64, 'data_scheme': base64WithScheme};
   }
 }

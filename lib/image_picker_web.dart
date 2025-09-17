@@ -18,17 +18,20 @@ extension WebFileListToDartList on web.FileList {
   ///
   /// This method makes a copy.
   List<web.File> toList() => [
-        for (int i = 0; i < length; i++)
-          if (item(i) case final item?) item,
-      ];
+    for (int i = 0; i < length; i++)
+      if (item(i) case final item?) item,
+  ];
 }
 
 class ImagePickerWeb {
   const ImagePickerWeb._();
 
   static void registerWith(Registrar registrar) {
-    MethodChannel('image_picker_web', const StandardMethodCodec(), registrar)
-        .setMethodCallHandler((call) {
+    MethodChannel(
+      'image_picker_web',
+      const StandardMethodCodec(),
+      registrar,
+    ).setMethodCallHandler((call) {
       switch (call.method) {
         case 'pickImage':
           return getImageAsFile();
@@ -51,9 +54,10 @@ class ImagePickerWeb {
   static Future<web.File?> _pickFile(String type) async {
     final completer = Completer<List<web.File>?>();
 
-    final input = web.HTMLInputElement()
-      ..accept = '$type/*'
-      ..type = 'file';
+    final input =
+        web.HTMLInputElement()
+          ..accept = '$type/*'
+          ..type = 'file';
 
     bool changeEventTriggered = false;
     void changeEventListener(web.Event e) {
@@ -116,8 +120,10 @@ class ImagePickerWeb {
     await reader.onLoadEnd.first;
 
     if (reader.result case final String encoded) {
-      final stripped =
-          encoded.replaceFirst(RegExp('data:$type/[^;]+;base64,'), '');
+      final stripped = encoded.replaceFirst(
+        RegExp('data:$type/[^;]+;base64,'),
+        '',
+      );
       final fileName = file.name;
       return <String, dynamic>{
         'name': fileName,
@@ -132,10 +138,11 @@ class ImagePickerWeb {
   /// source: https://stackoverflow.com/a/59420655/9942346
   static Future<List<web.File>?> _pickMultiFiles(String type) async {
     final completer = Completer<List<web.File>?>();
-    final input = web.HTMLInputElement()
-      ..accept = '$type/*'
-      ..type = 'file'
-      ..multiple = true;
+    final input =
+        web.HTMLInputElement()
+          ..accept = '$type/*'
+          ..type = 'file'
+          ..multiple = true;
 
     var changeEventTriggered = false;
     void changeEventListener(web.Event e) {
@@ -225,9 +232,7 @@ class ImagePickerWeb {
   static Future<List<Uint8List>?> getMultiImagesAsBytes() async {
     final images = await _pickMultiFiles('image');
     if (images == null) return null;
-    final files = <Uint8List>[
-      for (final img in images) await img.asBytes(),
-    ];
+    final files = <Uint8List>[for (final img in images) await img.asBytes()];
     return files.isEmpty ? null : files;
   }
 
@@ -236,9 +241,7 @@ class ImagePickerWeb {
   static Future<List<Image>?> getMultiImagesAsWidget() async {
     final images = await _pickMultiFiles('image');
     if (images == null) return null;
-    final files = <Uint8List>[
-      for (final img in images) await img.asBytes(),
-    ];
+    final files = <Uint8List>[for (final img in images) await img.asBytes()];
     if (files.isEmpty) return null;
     return files.map<Image>(Image.memory).toList();
   }
